@@ -1,0 +1,19 @@
+{
+  "name": "simple-node-analytics",
+  "description": "Simple web analytics service and client",
+  "author": "Steffen Kühne",
+  "version": "0.0.1",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:br-data/simple-node-analytics.git"
+  },
+  "scripts": {
+    "start": "node server"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "mongodb": "^3.1.0-beta4"
+  }
+}
