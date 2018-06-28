@@ -1,75 +1,62 @@
-var observer = (function () {
+import * as utils from './utils';
 
-  'use strict';
+let _config = { delay: 100 };
+let observables = [];
 
-  var _config = {
-    delay: 100
-  };
+export const init = (config) => {
 
-  var observables = [];
+  _config = utils.merge(_config, config || {});
 
-  function init(config) {
+  var debouncedCheck = utils.debounce(check, _config.delay);
 
-    _config = utils.merge(_config, config || {});
+  window.addEventListener('resize', debouncedCheck, false);
+  // window.addEventListener('scroll', debouncedCheck, false);
+  window.addEventListener('scroll', check, false);
+  window.addEventListener('next', check, false);
+};
 
-    var debouncedCheck = utils.debounce(check, _config.delay);
+export const add = (element, callback) => {
 
-    window.addEventListener('resize', debouncedCheck, false);
-    // window.addEventListener('scroll', debouncedCheck, false);
-    window.addEventListener('scroll', check, false);
-    window.addEventListener('next', check, false);
-  }
+  observables.push({
+    element,
+    callback,
+    visibility: false
+  });
+};
 
-  function add(element, callback) {
+// Check if visibility has changed
+const check = () => {
 
-    observables.push({
-      element: element,
-      callback: callback,
-      visibility: false
-    });
-  }
+  observables.forEach(obs => {
 
-  // Check if visibility has changed
-  function check() {
+    var visibility = isVisible(obs.element);
 
-    observables.forEach(function (obs) {
+    if (visibility !== obs.visibility) {
 
-      var visibility = isVisible(obs.element);
+      if (visibility) {
 
-      if (visibility !== obs.visibility) {
-
-        if (visibility) {
-
-          obs.callback('observer-' + obs.element.getAttribute('data-observer'));
-        }
-
-        obs.visibility = visibility;
+        obs.callback('observer-' + obs.element.getAttribute('data-observer'));
       }
-    });
-  }
 
-  // Check if element is fully visible in viewport
-  // https://stackoverflow.com/a/7557433/2037629
-  function isVisible(element) {
+      obs.visibility = visibility;
+    }
+  });
+};
 
-    var rect = element.getBoundingClientRect();
-    var page = document.querySelector('.slider').getBoundingClientRect();
+// Check if element is fully visible in viewport
+// https://stackoverflow.com/a/7557433/2037629
+const isVisible = (element) => {
 
-    return (
-      // Mobile
-      rect.right - rect.width == page.width ||
-      // Desktop
-      rect.top >= 0 &&
-      rect.left >= 0 &&
-      rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-      rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-    );
-  }
+  var rect = element.getBoundingClientRect();
+  var page = document.querySelector('.slider').getBoundingClientRect();
 
-  // Export global functions
-  return {
-    init: init,
-    add: add,
-    check: check
-  };
-})();
+  return (
+    // Mobile
+    rect.right - rect.width == page.width ||
+    // Desktop
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+  );
+};

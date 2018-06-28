@@ -1,15 +1,13 @@
-var timer = (function () {
+let prefixes = {};
+let seconds = 0;
+let timer;
+let callback;
 
-  'use strict';
+export default {
 
-  var prefixes = {};
-  var seconds = 0;
-  var timer;
-  var callback;
+  init(_callback) {
 
-  function init(_callback) {
-
-    callback = _callback || function () {};
+    callback = _callback || (() => {});
     prefixes = getVisabilityPrefix();
 
     document.addEventListener(prefixes.visibilityChange, handleChange, false);
@@ -18,75 +16,69 @@ var timer = (function () {
 
     startTimer();
   }
+};
 
-  function handleChange() {
+const handleChange = () => {
 
-    if (document[prefixes.hidden]) {
+  if (document[prefixes.hidden]) {
 
-      stopTimer();
-    } else {
+    stopTimer();
+  } else {
 
-      startTimer();
+    startTimer();
+  }
+};
+
+const startTimer = () => {
+
+  if (!timer) {
+
+    timer = setInterval(tick, 1000);
+  }
+};
+
+const stopTimer = () => {
+
+  clearInterval(timer);
+  timer = undefined;
+};
+
+const tick = () => {
+
+  seconds++;
+
+  // Only track full minutes
+  if (seconds % 60 === 0) {
+
+    // Only track up to half an hour
+    if (seconds / 60 <= 30) {
+
+      callback('timer-' + (seconds / 60) + '-minutes');
     }
   }
+};
 
-  function startTimer() {
+const getVisabilityPrefix =  () => {
 
-    if (!timer) {
+  var prefixes = {};
 
-      timer = setInterval(tick, 1000);
-    }
+  if (typeof document.hidden !== 'undefined') {
+
+    prefixes.hidden = 'hidden';
+    prefixes.visibilityChange = 'visibilitychange';
+  } else if (typeof document.mozHidden !== 'undefined') {
+
+    prefixes.hidden = 'mozHidden';
+    prefixes.visibilityChange = 'mozvisibilitychange';
+  } else if (typeof document.msHidden !== 'undefined') {
+
+    prefixes.hidden = 'msHidden';
+    prefixes.visibilityChange = 'msvisibilitychange';
+  } else if (typeof document.webkitHidden !== 'undefined') {
+
+    prefixes.hidden = 'webkitHidden';
+    prefixes.visibilityChange = 'webkitvisibilitychange';
   }
 
-  function stopTimer() {
-
-    clearInterval(timer);
-    timer = undefined;
-  }
-
-  function tick() {
-
-    seconds++;
-
-    // Only track full minutes
-    if (seconds % 60 === 0) {
-
-      // Only track up to half an hour
-      if (seconds / 60 <= 30) {
-
-        callback('timer-' + (seconds / 60) + '-minutes');
-      }
-    }
-  }
-
-  function getVisabilityPrefix () {
-
-    var prefixes = {};
-
-    if (typeof document.hidden !== 'undefined') {
-
-      prefixes.hidden = 'hidden';
-      prefixes.visibilityChange = 'visibilitychange';
-    } else if (typeof document.mozHidden !== 'undefined') {
-
-      prefixes.hidden = 'mozHidden';
-      prefixes.visibilityChange = 'mozvisibilitychange';
-    } else if (typeof document.msHidden !== 'undefined') {
-
-      prefixes.hidden = 'msHidden';
-      prefixes.visibilityChange = 'msvisibilitychange';
-    } else if (typeof document.webkitHidden !== 'undefined') {
-
-      prefixes.hidden = 'webkitHidden';
-      prefixes.visibilityChange = 'webkitvisibilitychange';
-    }
-
-    return prefixes;
-  }
-
-  // Export global functions
-  return {
-    init: init
-  };
-})();
-
+  return prefixes;
+};
