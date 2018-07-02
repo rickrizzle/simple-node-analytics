@@ -85,6 +85,8 @@ app.use((req, res, next) => {
 });
 
 app.use(bodyParser.text());
+
+app.use('/build', express.static('build'));
 app.use('/', router);
 
 MongoClient.connect(mongoUrl, { useNewUrlParser: true }, (error, client) => {

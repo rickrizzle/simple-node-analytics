@@ -7,7 +7,7 @@ module.exports = {
 
   output: {
     filename: 'client.bundle.js',
-    path: path.resolve('./'),
+    path: path.resolve('./build/'),
     library: 'analytics'
   },
 
