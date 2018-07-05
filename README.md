@@ -30,7 +30,7 @@ analytics.init({
 });
 ```
 
-## mServer
+## Server
 The Analytics service accepts tracking requests and stores them in a MongoDB collection.
 
 ```
@@ -49,9 +49,13 @@ For each request, the value for the corresponding tracking key and device is inc
 }
 ```
 
+MongoDB could be easily swapped for another database like PostgreSQL. 
+
 ## To do
-- Plugin: Errors
-- Plugin: Devices, Screens
+- Plugin: Errors, exceptions
+- Plugin: Devices, sizes
+- Plugin: Geolocations
+- Plugin: Load times
 - Plugin: (Custom events)
 - Config for service
 
