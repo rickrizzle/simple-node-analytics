@@ -48,7 +48,7 @@ const check = () => {
 const isVisible = (element) => {
 
   var rect = element.getBoundingClientRect();
-  var page = document.querySelector('.slider').getBoundingClientRect();
+  var page = document.querySelector('body').getBoundingClientRect();
 
   return (
     // Mobile
