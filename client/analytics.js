@@ -16,8 +16,7 @@ let _config = {
 let request;
 
 // Global export for browser
-export const init = (config) => {
-
+export const init = config => {
   _config = utils.merge(_config, config || {});
   _config.session = utils.uuid();
   _config.device = utils.getWidth() > 680 ? 'desktop' : 'mobile';
@@ -26,14 +25,11 @@ export const init = (config) => {
 };
 
 const registerTrackers = () => {
-
   if (_config.tracker.timer) {
-
     timer.init(send);
   }
 
   if (_config.tracker.click) {
-
     const clickables = document.querySelectorAll('[data-click]');
 
     Array.from(clickables).forEach(element => {
@@ -52,45 +48,40 @@ const registerTrackers = () => {
   }
 
   if (_config.tracker.observer) {
-
     const observables = document.querySelectorAll('[data-observer]');
 
     observer.init();
 
     Array.from(observables).forEach(obs => {
-
       const callback = utils.once(send);
-
       observer.add(obs, callback);
     });
   }
 
   // @todo: Pass a function instead
   if (_config.tracker.custom) {
-
     send('my-custom-event');
   }
 };
 
 const send = (string, value) => {
-
   const requestBody = JSON.stringify({
-    'session': _config.session,
-    'project': _config.projectId,
-    'device': _config.device,
-    'key': string || undefined,
-    'value': value || 1
+    session: _config.session,
+    project: _config.projectId,
+    device: _config.device,
+    key: string || undefined,
+    value: value || 1
   });
 
   // Use sendBeacon if available ...
   if (typeof navigator.sendBeacon == 'function') {
-
     navigator.sendBeacon(_config.serviceUrl, requestBody);
 
-  // .. else use good ol' XMLHttpRequest
+    // .. else use good ol' XMLHttpRequest
   } else {
-
-    if (request) { request.abort(); }
+    if (request) {
+      request.abort();
+    }
 
     request = new XMLHttpRequest();
     request.open('POST', _config.serviceUrl, true);
