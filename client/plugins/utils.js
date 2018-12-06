@@ -57,3 +57,13 @@ export const uuid = () => {
     .toString(36)
     .slice(2);
 };
+
+// Get user do-not-track settings
+// https://developer.mozilla.org/en-US/docs/Web/API/Navigator/doNotTrack
+export const getDNTConsent = () => {
+  if (typeof navigator.doNotTrack != 'undefined') {
+    return navigator.doNotTrack == '1' ? false : true;
+  } else {
+    return true;
+  }
+};

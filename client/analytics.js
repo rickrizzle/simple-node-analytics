@@ -10,7 +10,8 @@ let _config = {
     observer: true,
     timer: true,
     custom: true
-  }
+  },
+  respectDNT: true
 };
 
 let request;
@@ -21,7 +22,12 @@ export const init = config => {
   _config.session = utils.uuid();
   _config.device = utils.getWidth() > 680 ? 'desktop' : 'mobile';
 
-  registerTrackers();
+  // Check if user disallows tracking and if we respect that decision
+  if (utils.getDNTConsent() && _config.respectDNT) {
+    registerTrackers();
+  } else {
+    send('custom-dnt-1');
+  }
 };
 
 const registerTrackers = () => {
@@ -60,7 +66,7 @@ const registerTrackers = () => {
 
   // @todo: Pass a function instead
   if (_config.tracker.custom) {
-    send('my-custom-event');
+    send('custom-my-event');
   }
 };
 
@@ -73,19 +79,21 @@ const send = (string, value) => {
     value: value || 1
   });
 
-  // Use sendBeacon if available ...
-  if (typeof navigator.sendBeacon == 'function') {
-    navigator.sendBeacon(_config.serviceUrl, requestBody);
-
-    // .. else use good ol' XMLHttpRequest
+  // Don't track during development
+  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+    /*eslint no-console: ["error", { allow: ["warn"] }] */
+    console.warn('Tracking requests are disabled while working on localhost:', requestBody);
   } else {
-    if (request) {
-      request.abort();
+    // Use sendBeacon if available ...
+    if (typeof navigator.sendBeacon == 'function') {
+      navigator.sendBeacon(_config.serviceUrl, JSON.stringify(requestBody));
+      // .. else use good ol' XMLHttpRequest
+    } else {
+      if (request) { request.abort(); }
+      request = new XMLHttpRequest();
+      request.open('POST', _config.serviceUrl, true);
+      request.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
+      request.send(JSON.stringify(requestBody));
     }
-
-    request = new XMLHttpRequest();
-    request.open('POST', _config.serviceUrl, true);
-    request.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
-    request.send(requestBody);
   }
 };
