@@ -11,7 +11,7 @@ let _config = {
     timer: true,
     custom: true
   },
-  respectDNT: true
+  ignoreDNT: true
 };
 
 let request;
@@ -22,11 +22,11 @@ export const init = config => {
   _config.session = utils.uuid();
   _config.device = utils.getWidth() > 680 ? 'desktop' : 'mobile';
 
-  // Check if user disallows tracking and if we respect that decision
-  if (utils.getDNTConsent() && _config.respectDNT) {
+  // Check if user disabled tracking and if we respect that decision
+  if (utils.getDNTConsent() || _config.respectDNT) {
     registerTrackers();
   } else {
-    send('custom-dnt-1');
+    send('client-dnt-enabled');
   }
 };
 
@@ -55,13 +55,9 @@ const registerTrackers = () => {
 
   if (_config.tracker.observer) {
     const observables = document.querySelectorAll('[data-observer]');
+    const callback = utils.once(send);
 
-    observer.init();
-
-    Array.from(observables).forEach(obs => {
-      const callback = utils.once(send);
-      observer.add(obs, callback);
-    });
+    observer.init(observables, callback);
   }
 
   // @todo: Pass a function instead
