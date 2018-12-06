@@ -34,7 +34,7 @@ analytics.init({
 The Analytics service accepts tracking requests and stores them in a MongoDB collection.
 
 ```
-$ node analytics/server.js
+$ node server
 ```
 
 For each request, the value for the corresponding tracking key and device is incremented. Here's an example of getting headers on desktop devices:
@@ -42,20 +42,25 @@ For each request, the value for the corresponding tracking key and device is inc
 ```javascript
 {
   "_id" : ObjectId("5b179f0e8fd447fe98595b14"),
-  "project" : "aerztemangel",
+  "project" : "demo",
   "device" : "desktop",
   "key" : "observer-0-header",
   "value" : 2231
 }
 ```
 
+Exporting a MongoDB collection to JSON is done by using the `mongoexport` command:
+
+```
+$ mongoexport --db analytics --collection demo --out ./demo.json --jsonArray
+```
+
 MongoDB could be easily swapped for another database like PostgreSQL. 
 
 ## To do
-- Plugin: Errors, exceptions
 - Plugin: Devices, sizes
+- Plugin: Errors, exceptions
 - Plugin: Geolocations
 - Plugin: Load times
-- Plugin: (Custom events)
+- Plugin: Custom events
 - Config for service
-
