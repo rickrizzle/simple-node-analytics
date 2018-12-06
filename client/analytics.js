@@ -36,16 +36,13 @@ const registerTrackers = () => {
 
     const clickables = document.querySelectorAll('[data-click]');
 
-    clickables.forEach(element => {
-
+    Array.from(clickables).forEach(element => {
       const callback = utils.once(send);
 
       element.addEventListener('click', event => {
-
         let target = event.target;
 
         if (!target.getAttribute('data-click')) {
-
           target = target.parentNode;
         }
 
@@ -60,9 +57,10 @@ const registerTrackers = () => {
 
     observer.init();
 
-    observables.forEach(obs => {
+    Array.from(observables).forEach(obs => {
 
       const callback = utils.once(send);
+
       observer.add(obs, callback);
     });
   }
