@@ -6,14 +6,10 @@
   "private": true,
   "repository": {
     "type": "git",
-    "url": "git@github.com:br-data/simple-node-analytics.git"
+    "url": "git@github.com:stekhn/simple-node-analytics.git"
   },
   "scripts": {
-    "audit": "source-map-explorer public/dist/main.bundle.js",
     "build": "webpack -p",
-    "clear": "rm -rf public/dist/",
-    "clear:all": "rm -rf node_modules/ && npm run clear",
-    "count": "find src -name '*.js' | xargs wc -l | sort -r",
     "start": "node server",
     "watch": "webpack -w"
   },
@@ -29,7 +25,6 @@
     "babel-loader": "^6.4.1",
     "babel-preset-env": "^1.7.0",
     "eslint": "^5.0.0",
-    "source-map-explorer": "^1.3.3",
     "webpack": "^2.3.2",
     "webpack-cli": "^3.0.8"
   }
