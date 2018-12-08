@@ -18,7 +18,7 @@ let request;
 
 // Global export for browser
 export const init = _config => {
-  config = utils.merge(config, _config || {});
+  config = Object.assign(config, _config || {});
   config.session = utils.uuid();
   config.device = utils.getWidth() > 680 ? 'desktop' : 'mobile';
 
@@ -55,7 +55,8 @@ const registerTrackers = () => {
 
   if (config.tracker.observer) {
     const observables = document.querySelectorAll('[data-observer]');
-    const callback = utils.once(send);
+    // const callback = utils.once(send);
+    const callback = send;
 
     observer.init(observables, callback);
   }
@@ -68,9 +69,9 @@ const registerTrackers = () => {
 
 const send = (string, value) => {
   const requestBody = JSON.stringify({
-    // session: config.session,
-    // project: config.projectId,
-    // device: config.device,
+    session: config.session,
+    project: config.projectId,
+    device: config.device,
     key: string || undefined,
     value: value || 1
   });

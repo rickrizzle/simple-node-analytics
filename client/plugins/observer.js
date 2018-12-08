@@ -1,5 +1,4 @@
 import 'intersection-observer';
-import * as utils from './utils';
 
 const options = {
   rootMargin: '0px', // browser default
