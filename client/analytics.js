@@ -1,5 +1,6 @@
 import * as utils from './plugins/utils';
 import * as observer from './plugins/observer';
+import * as client from './plugins/client';
 import timer from './plugins/timer';
 
 let config = {
@@ -13,17 +14,21 @@ let config = {
   },
   ignoreDNT: true
 };
-
+let user = {};
 let request;
 
 // Global export for browser
 export const init = _config => {
   config = Object.assign(config, _config || {});
-  config.session = utils.uuid();
-  config.device = utils.getWidth() > 680 ? 'desktop' : 'mobile';
 
   // Check if user disabled tracking and if we respect that decision
   if (utils.getDNTConsent() || config.ignoreDNT) {
+    const browser = client.getBrowser();
+    user.session = utils.uuid();
+    user.browserName = browser.name;
+    user.browserVersion = browser.version;
+    user.browserOs = browser.os;
+
     registerTrackers();
   } else {
     send('client-dnt-enabled');
@@ -68,10 +73,8 @@ const registerTrackers = () => {
 };
 
 const send = (string, value) => {
-  const requestBody = JSON.stringify({
-    session: config.session,
+  const requestBody = Object.assign(user, {
     project: config.projectId,
-    device: config.device,
     key: string || undefined,
     value: value || 1
   });
