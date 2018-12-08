@@ -49,7 +49,7 @@ For each request, the value for the corresponding tracking key and device is inc
 }
 ```
 
-Exporting a MongoDB collection to JSON is done by using the `mongoexport` command:
+Exporting analytics data from a MongoDB collection to JSON is done by using the `mongoexport` command:
 
 ```
 $ mongoexport --db analytics --collection demo --out ./demo.json --jsonArray
@@ -57,10 +57,17 @@ $ mongoexport --db analytics --collection demo --out ./demo.json --jsonArray
 
 MongoDB could be easily swapped for another database like PostgreSQL. 
 
-## To do
+## Roadmap
+
+**Client**
 - Plugin: Devices, sizes
 - Plugin: Errors, exceptions
 - Plugin: Geolocations
 - Plugin: Load times
 - Plugin: Custom events
-- Config for service
+
+**Service**
+- Config file for analytics service (MongoDB, port, ...)
+- Command line interface, e.g. `simple-node-analytics -p 3100`
+- Friendly errors (no database, port in use, ...)
+- Protected API for retrieving analytics data 
