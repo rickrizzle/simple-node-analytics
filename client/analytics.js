@@ -7,6 +7,7 @@ let config = {
   serviceUrl: 'http://localhost:3010/track',
   projectId: 'demo',
   tracker: {
+    client: true,
     click: true,
     observer: true,
     timer: true,
@@ -29,7 +30,6 @@ export const init = _config => {
     user.device = client.getDevice();
     user.session = client.getUuid();
     user.browserName = browser.name;
-    user.browserVersion = browser.version;
     user.browserOs = browser.os;
 
     registerTrackers();
@@ -37,8 +37,10 @@ export const init = _config => {
 };
 
 const registerTrackers = () => {
-  if (config.tracker.timer) {
-    timer.init(send);
+  if (config.tracker.client) {
+    send('client-device-' + utils.toDashCase(user.browserName));
+    send('client-browser-' + utils.toDashCase(user.browserName));
+    send('client-os-' + utils.toDashCase(user.browserOs));
   }
 
   if (config.tracker.click) {
@@ -65,6 +67,10 @@ const registerTrackers = () => {
     const callback = send;
 
     observer.init(observables, callback);
+  }
+
+  if (config.tracker.timer) {
+    timer.init(send);
   }
 
   // @todo: Pass a function instead

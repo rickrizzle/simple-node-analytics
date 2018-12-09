@@ -12,3 +12,9 @@ export const once = func => {
     }
   };
 };
+
+export const toDashCase = input => {
+  return input.toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9-]/g, '');
+};
