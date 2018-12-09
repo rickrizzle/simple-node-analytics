@@ -12,7 +12,8 @@ let config = {
     timer: true,
     custom: true
   },
-  ignoreDNT: true
+  respectDoNotTrack: false,
+  debug: false
 };
 let user = {};
 let request;
@@ -21,17 +22,17 @@ let request;
 export const init = _config => {
   config = Object.assign(config, _config || {});
 
-  // Check if user disabled tracking and if we respect that decision
-  if (utils.getDNTConsent() || config.ignoreDNT) {
+  if (client.doNotTrackEnabled() && config.respectDoNotTrack) {
+    send('client-dnt-enabled');
+  } else {
     const browser = client.getBrowser();
-    user.session = utils.uuid();
+    user.device = client.getDevice();
+    user.session = client.getUuid();
     user.browserName = browser.name;
     user.browserVersion = browser.version;
     user.browserOs = browser.os;
 
     registerTrackers();
-  } else {
-    send('client-dnt-enabled');
   }
 };
 
@@ -80,7 +81,8 @@ const send = (string, value) => {
   });
 
   // Don't track during development
-  if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+  if ((config.debug && location.hostname === 'localhost') ||
+    (config.debug && location.hostname === '127.0.0.1')) {
     /*eslint no-console: ["error", { allow: ["warn"] }] */
     console.warn('Tracking requests are disabled while working on localhost:\n', requestBody);
   } else {
