@@ -38,7 +38,7 @@ export const init = _config => {
 
 const registerTrackers = () => {
   if (config.tracker.client) {
-    send('client-device-' + utils.toDashCase(user.browserName));
+    send('client-device-' + utils.toDashCase(user.device));
     send('client-browser-' + utils.toDashCase(user.browserName));
     send('client-os-' + utils.toDashCase(user.browserOs));
   }
@@ -63,10 +63,8 @@ const registerTrackers = () => {
 
   if (config.tracker.observer) {
     const observables = document.querySelectorAll('[data-observer]');
-    // const callback = utils.once(send);
-    const callback = send;
 
-    observer.init(observables, callback);
+    observer.init(observables, send);
   }
 
   if (config.tracker.timer) {
@@ -87,8 +85,7 @@ const send = (string, value) => {
   });
 
   // Don't track during development
-  if ((config.debug && location.hostname === 'localhost') ||
-    (config.debug && location.hostname === '127.0.0.1')) {
+  if ((config.debug && location.hostname === 'localhost') || (config.debug && location.hostname === '127.0.0.1')) {
     /*eslint no-console: ["error", { allow: ["warn"] }] */
     console.warn('Tracking requests are disabled while working on localhost:\n', requestBody);
   } else {
@@ -97,7 +94,9 @@ const send = (string, value) => {
       navigator.sendBeacon(config.serviceUrl, JSON.stringify(requestBody));
       // .. else use good ol' XMLHttpRequest
     } else {
-      if (request) { request.abort(); }
+      if (request) {
+        request.abort();
+      }
       request = new XMLHttpRequest();
       request.open('POST', config.serviceUrl, true);
       request.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');

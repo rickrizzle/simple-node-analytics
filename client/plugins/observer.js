@@ -10,6 +10,7 @@ export const init = (observables, callback) => {
     Array.from(observables).forEach(obs => {
       if (obs.intersectionRatio > 0) {
         callback('observer-' + obs.target.getAttribute('data-observer'));
+        observer.unobserve(obs.target);
       }
     });
   }, options);
