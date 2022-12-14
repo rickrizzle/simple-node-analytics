@@ -1,6 +1,12 @@
 # Simple Node Analytics
 Simple web analytics to better understand user interaction and behaviour. Client and server are written in Javascript. All tracking results and events are written to a database by a simple Node.js service. Right now, there are no plans to build a fancy analytics dashboard.
 
+# Rick's Additions
+I forked this from one of my favorite programmers on GitHub. I think this will make for a fun side project that hits two points for me:
+
+- **data analytics**: I am in the process of expanding my knowledge base of cleaning, manipulating, analyzing, and visualizing data. 
+- **data viz**: Something I want to get really good at is creating data visualizations. Even though I've been focusing on Python recently, this will be a good refresher on JavaScript and using it in a new way. 
+
 ## Client
 The analytics client has a modular structure and can be configured for multiple trackers:
 
